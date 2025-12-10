@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import sql_temp.Abst_connect_Serv;
+import sql_temp.ConnectSQL;
 
 /**
  * Servlet implementation class Tes_Servlt
  */
 @WebServlet("/Tes_Servlt")
-public class Tes_Servlt extends Abst_connect_Serv {
+public class Tes_Servlt extends HttpServlet implements ConnectSQL{
 	private static final long serialVersionUID = 1L;
 
     public Tes_Servlt() {
@@ -30,7 +30,7 @@ public class Tes_Servlt extends Abst_connect_Serv {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			ResultSet rs=
-					this.connectDB("select AREA_CODE , AREA_NAME from AREA");
+					ConnectSQL.connectDB("select AREA_CODE , AREA_NAME from AREA");
 			List<String[]> area = new ArrayList<>();
 			while(rs.next() != false) {
 				String[] ss = new String[2];
