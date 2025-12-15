@@ -1,79 +1,41 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>配達予約登録フォーム</title>
+<meta charset="UTF-8">
+<title>配達登録フォーム</title>
+<script>
+function updateFurniture() {
+  const count = document.getElementById("furnitureCount").value;
+  const area = document.getElementById("furnitureArea");
+  area.innerHTML = "";
+  for (let i = 1; i <= count; i++) {
+    area.innerHTML +=
+      `家具番号${i}：<input type="text" name="furniture${i}" required><br>`;
+  }
+}
+</script>
 </head>
-<body>
-  <h2>配達予約登録フォーム</h2>
+<body onload="updateFurniture()">
 
-  <!-- ★ 送信先: DelivaryServlet / POST -->
-  <form action="delivaryform" method="post">
-    <!-- ■ 郵便番号 -->
-    <input type="text" name="zipcode" maxlength="7" inputmode="numeric" placeholder="例：9830013" required>
+<h2>配達登録フォーム</h2>
 
-    <!-- ■ 住所 -->
-    <div class="section-title">住所</div>
-    <input type="text" name="address" placeholder="例：宮城県仙台市青葉区…" required>
+<form action="delivaryform" method="post">
+  郵便番号：<input type="text" name="zipcode" required><br>
+  住所：<input type="text" name="address" required><br>
+  氏名：<input type="text" name="name" required><br>
+  電話番号：<input type="text" name="tel" required><br>
 
-    <!-- ■ 氏名 -->
-    <div class="section-title">氏名</div>
-    <input type="text" name="name" placeholder="例：東北太郎" required>
+  家具数：
+  <input type="number" id="furnitureCount" name="furnitureCount"
+         min="1" max="10" value="1" onchange="updateFurniture()"><br>
 
-    <!-- ■ 電話番号 -->
-    <div class="section-title">電話番号</div>
-    <input type="text" name="phone" maxlength="11" inputmode="numeric" placeholder="例：09012345678" required>
+  <div id="furnitureArea"></div>
 
-    <!-- ■ 家具情報 -->
-    <div class="section-title">家具情報　例：1234（半角数字4桁）</div>
+  <button type="button" onclick="location.href='index1.html'">
+    戻る
+  </button>
+  <button type="submit">確認</button>
+</form>
 
-    <!-- スピンボックス（1〜10） -->
-    <div class="spin-row">
-      <label for="itemCount" style="margin:0;">個数</label>
-      <input type="number" id="itemCount" name="itemCount" min="1" max="10" value="1">
-    </div>
-
-    <!-- 個数に合わせて生成される家具番号入力欄 -->
-    <div id="items" class="items-grid"></div>
-
-    <div class="actions">
-      <button type="submit">登録</button>
-    </div>
-  </form>
-
-  <script>
-    // ★ フォーム構成は変えずに、家具番号欄だけ生成
-    function renderItems(count) {
-      const container = document.getElementById('items');
-      container.innerHTML = '';
-      const n = Math.max(1, Math.min(10, Number(count) || 1));
-      for (let i = 0; i < n; i++) {
-        const wrap = document.createElement('div');
-        wrap.innerHTML = `
-          <div style="display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:center;margin:6px 0;">
-            <span>${i + 1}</span>
-            <input type="text"
-                   name="itemNumber"
-                   placeholder="例：${String(i + 1).padStart(4, '0')}"
-                   inputmode="numeric"
-                   pattern="\\d{4}"
-                   title="半角数字4桁で入力してください（例：1234）"
-                   required>
-          </div>
-        `;
-        container.appendChild(wrap);
-      }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      const spin = document.getElementById('itemCount');
-      renderItems(spin.value);
-      // スピンボックスの変更で再生成
-      spin.addEventListener('input', () => renderItems(spin.value));
-      spin.addEventListener('change', () => renderItems(spin.value));
-    });
-  </script>
 </body>
 </html>
-
-
