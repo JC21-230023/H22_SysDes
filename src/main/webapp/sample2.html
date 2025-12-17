@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<title>配達指定日時選択</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --accent:#6cc;         /* 見出しの背景イメージ用 */
+    --accent2:#aee;        /* カレンダーのヘッダ背景 */
+    --border:#b7c2c8;
+    --danger:#c0392b;
+    --ok:#2c7a7b;
+  }
+  body{
+    font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    background:#f6f4ee;
+    margin:0; padding:24px;
+    color:#333;
+  }
+  .page{
+    max-width:760px; margin:0 auto; background:#fff; border:1px solid var(--border);
+    padding:28px; border-radius:8px; box-shadow: 0 3px 8px rgba(0,0,0,.05);
+  }
+  h1{
+    text-align:center; margin:0 0 12px; font-weight:600; letter-spacing:.05em;
+  }
+  .vendor{ text-align:left; margin:8px 0 18px; }
+  .controls{
+    display:flex; gap:12px; align-items:center; justify-content:flex-start;
+    flex-wrap:wrap; margin-bottom:10px;
+  }
+  select, button{
+    font-size:16px; padding:8px 10px; border:1px solid var(--border); border-radius:6px;
+    background:#fff;
+  }
+  .calendar{
+    border:1px solid var(--border); border-radius:8px; overflow:hidden; width:100%;
+    max-width:520px; margin:0 auto 10px;
+  }
+  .cal-header{
+    display:grid; grid-template-columns: repeat(7, 1fr);
+    background:var(--accent2); border-bottom:1px solid var(--border);
+  }
+  .cal-header div{
+    padding:10px; text-align:center; font-weight:600;
+  }
+  .cal-grid{
+    display:grid; grid-template-columns: repeat(7, 1fr);
+  }
+  .day{
+    min-height:56px; border-right:1px solid var(--border); border-bottom:1px solid var(--border);
+    display:flex; align-items:flex-start; justify-content:flex-end; padding:8px; position:relative;
+  }
+  .day:nth-child(7n){ border-right:none; } /* 右端 */
+  .day .num{
+    font-size:14px; color:#333;
+  }
+  .day.disabled{
+    background:#fafafa; color:#aaa; cursor:not-allowed;
+  }
+  .day.selectable{
+    cursor:pointer;
+  }
+  .day.selectable:hover{
+    background:#f0fbff;
+  }
+  .day.selected{
+    outline:2px solid var(--ok);
+    background:#e8fffc;
+  }
+  .sun .num{ color:#d35400; }    /* 日曜 */
+  .sat .num{ color:#2980b9; }    /* 土曜 */
+  .legend{ text-align:center; margin:6px 0 16px; font-size:14px; color:#666; }
+  .actions{ display:flex; gap:18px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+  .back{ background:#fff; }
+  .submit{ background:#e9f9f7; border-color:#9bd4cc; }
+  .error{
+    margin-top:12px; color:#fff; background:var(--danger); padding:10px 12px; border-radius:6px;
+    display:none;
+  }
+  .success{
+    margin-top:12px; color:#0b4d3b; background:#c8f3e9; padding:10px 12px; border-radius:6px;
+    display:none;
+  }
+  /* 時間帯 */
+  .timeband{
+    display:flex; gap:8px; align-items:center; margin:12px 0 16px;
+    justify-content:center;
+  }
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+    clip:rect(0,0,0,0); border:0;
+  }
+</style>
+</head>
+<body>
+  <div class="page" aria-labelledby="title">
+    <h1 id="title">配達指定日時選択</h1>
+    <div class="vendor">業者名：<strong id="vendorName">東北運輸</strong></div>
+
+    <!-- 年月コントロール -->
+    <div class="controls" aria-label="カレンダーの変更">
+      <span>カレンダーの変更：</span>
+      <label class="sr-only" for="yearSel">年</label>
+      <select id="yearSel"></select>
+      <label class="sr-only" for="monthSel">月</label>
+      <select id="monthSel"></select>
+    </div>
+
+    <!-- カレンダー -->
+    <div class="calendar" role="grid" aria-label="配達指定日のカレンダー">
+      <div class="cal-header" role="row">
+        <div role="columnheader" aria-label="日">日</div>
+        <div role="columnheader" aria-label="月">月</div>
+        <div role="columnheader" aria-label="火">火</div>
+        <div role="columnheader" aria-label="水">水</div>
+        <div role="columnheader" aria-label="木">木</div>
+        <div role="columnheader" aria-label="金">金</div>
+        <div role="columnheader" aria-label="土">土</div>
+      </div>
+      <div id="calGrid" class="cal-grid"></div>
+    </div>
+
+    <div class="legend">※ 選択可能な日だけクリックできます。</div>
+
+    <!-- 時間帯 -->
+    <div class="timeband">
+      <label for="timeBandSel">時間帯：</label>
+      <select id="timeBandSel">
+        <option value="" selected>選択してください</option>
+        <option value="AM">午前（9:00〜12:00）</option>
+        <option value="PM">午後（13:00〜17:00）</option>
+      </select>
+    </div>
+
+    <!-- アクション -->
+    <div class="actions">
+      <button type="button" class="back" onclick="history.back()">戻る</button>
+      <button type="button" class="submit" id="submitBtn">登録</button>
+    </div>
+
+    <!-- メッセージ -->
+    <div id="errorBox" class="error" role="alert"></div>
+    <div id="successBox" class="success" role="status"></div>
+  </div>
+
+<script>
+/* ========= 設定（必要に応じて変更） ========= */
+// 選択可能な範囲：今日から MAX_FORWARD_DAYS 日先まで
+const MAX_FORWARD_DAYS = 30;
+// 休業日（曜日番号 0=日,1=月,...,6=土）を選択不可にする
+const DISABLE_WEEKDAYS = [0];   // 例：日曜不可。土曜も不可なら [0,6]
+// 任意の個別不可日（'YYYY-MM-DD' の文字列配列）
+const DISABLE_DATES = [];       // 例：['2025-12-25','2025-12-31']
+
+// ベンダー名（画面上の表示）
+document.getElementById('vendorName').textContent = '東北運輸';
+
+/* ========= ユーティリティ ========= */
+const fmt = (y, m, d) => `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+const today = new Date(); today.setHours(0,0,0,0);
+const maxDate = new Date(today); maxDate.setDate(maxDate.getDate() + MAX_FORWARD_DAYS);
+
+function isWithinRange(date){
+  return date >= today && date <= maxDate;
+}
+function isDisabledWeekday(date){
+  return DISABLE_WEEKDAYS.includes(date.getDay());
+}
+function isDisabledDate(date){
+  return DISABLE_DATES.includes(fmt(date.getFullYear(), date.getMonth()+1, date.getDate()));
+}
+
+/* ========= 年月セレクト生成 ========= */
+(function initYearMonth(){
+  const yearSel = document.getElementById('yearSel');
+  const monthSel = document.getElementById('monthSel');
+  const startYear = today.getFullYear();
+  const endYear = maxDate.getFullYear();
+
+  for(let y = startYear; y <= endYear; y++){
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = `${y}年`;
+    yearSel.appendChild(opt);
+  }
+  for(let m = 1; m <= 12; m++){
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = `${m}月`;
+    monthSel.appendChild(opt);
+  }
+
+  // 初期値：現在の年月
+  yearSel.value = today.getFullYear();
+  monthSel.value = today.getMonth()+1;
+
+  yearSel.addEventListener('change', renderCalendar);
+  monthSel.addEventListener('change', renderCalendar);
+})();
+
+/* ========= カレンダー描画 ========= */
+let selectedDate = null;
+
+function renderCalendar(){
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const year = parseInt(document.getElementById('yearSel').value, 10);
+  const month = parseInt(document.getElementById('monthSel').value, 10);
+
+  const first = new Date(year, month-1, 1);
+  const last = new Date(year, month, 0);
+  const startOffset = first.getDay(); // 0=日
+
+  // 先頭の空セル
+  for(let i=0; i<startOffset; i++){
+    const cell = document.createElement('div');
+    cell.className = 'day disabled';
+    grid.appendChild(cell);
+  }
+
+  for(let d=1; d<=last.getDate(); d++){
+    const date = new Date(year, month-1, d);
+    const cell = document.createElement('div');
+    const weekday = date.getDay();
+
+    cell.classList.add('day');
+    if(weekday === 0) cell.classList.add('sun');
+    if(weekday === 6) cell.classList.add('sat');
+
+    const num = document.createElement('div');
+    num.className = 'num';
+    num.textContent = d;
+    cell.appendChild(num);
+
+    // 判定：選択可能か
+    const selectable = isWithinRange(date) && !isDisabledWeekday(date) && !isDisabledDate(date);
+
+    if(selectable){
+      cell.classList.add('selectable');
+      cell.tabIndex = 0; // キーボードでフォーカス可能
+      cell.setAttribute('role','gridcell');
+      cell.setAttribute('aria-label', `${year}年${month}月${d}日`);
+      cell.addEventListener('click', () => selectDate(date, cell));
+      cell.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault(); selectDate(date, cell);
+        }
+      });
+    }else{
+      cell.classList.add('disabled');
+      cell.setAttribute('aria-disabled','true');
+    }
+
+    grid.appendChild(cell);
+  }
+
+  // 末尾の空セル（行揃え）
+  const cells = grid.children.length;
+  const remainder = cells % 7;
+  if(remainder !== 0){
+    for(let i=0; i<7-remainder; i++){
+      const cell = document.createElement('div');
+      cell.className = 'day disabled';
+      grid.appendChild(cell);
+    }
+  }
+
+  // 選択済みが表示月に存在すればハイライト維持
+  if(selectedDate && selectedDate.getFullYear() === year && (selectedDate.getMonth()+1) === month){
+    const index = startOffset + selectedDate.getDate() - 1;
+    const maybe = grid.children[index];
+    if(maybe && maybe.classList.contains('selectable')){
+      maybe.classList.add('selected');
+    }
+  }
+}
+
+function selectDate(date, cell){
+  // 既存の選択ハイライト解除
+  document.querySelectorAll('.day.selected').forEach(el => el.classList.remove('selected'));
+  cell.classList.add('selected');
+  selectedDate = date;
+  clearMessage();
+}
+
+/* ========= 登録ボタンクリック ========= */
+document.getElementById('submitBtn').addEventListener('click', () => {
+  const error = document.getElementById('errorBox');
+  const success = document.getElementById('successBox');
+  const timeBand = document.getElementById('timeBandSel').value;
+
+  clearMessage();
+
+  // バリデーション
+  if(!selectedDate){
+    showError('配達日を選択してください。');
+    return;
+  }
+  if(!timeBand){
+    showError('時間帯を選択してください。');
+    return;
+  }
+  // 再チェック（念のため）
+  if(!isWithinRange(selectedDate) || isDisabledWeekday(selectedDate) || isDisabledDate(selectedDate)){
+    showError('選択した日付は指定できません。別の日を選択してください。');
+    return;
+  }
+
+  // 正常
+  const y = selectedDate.getFullYear();
+  const m = String(selectedDate.getMonth()+1).padStart(2,'0');
+  const d = String(selectedDate.getDate()).padStart(2,'0');
+  const bandText = timeBand === 'AM' ? '午前（9:00〜12:00）' : '午後（13:00〜17:00）';
+  showSuccess(`登録内容：${y}年${m}月${d}日 / ${bandText}`);
+  // 実際の送信はここで fetch などを使用（今回はデモなので遷移なし）
+});
+
+function showError(msg){
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.style.display = 'block';
+}
+function showSuccess(msg){
+  const box = document.getElementById('successBox');
+  box.textContent = msg;
+  box.style.display = 'block';
+}
+function clearMessage(){
+  document.getElementById('errorBox').style.display = 'none';
+  document.getElementById('successBox').style.display = 'none';
+}
+
+/* 初期描画 */
+renderCalendar();
+</script>
+</body>
