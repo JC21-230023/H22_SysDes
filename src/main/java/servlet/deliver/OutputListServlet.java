@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import sql_temp.ConnectSQL;
+
 /**
  * Servlet implementation class OutputListServlet
  */
-@WebServlet("/OutputListServlet")
+@WebServlet("/delivers")
+//担当者がアクセスの想定、業者、日付を選択する
+
 public class OutputListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public OutputListServlet() {
         super();
         // TODO Auto-generated constructor stub
@@ -27,15 +27,23 @@ public class OutputListServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		request.getRequestDispatcher("/Outputlist.jsp");
+		
+		try {
+			
+			ConnectSQL.getSt("");
+		}catch(Exception e) {
+			
+			
+		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException {
+		
 		doGet(request, response);
 	}
 
