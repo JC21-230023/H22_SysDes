@@ -1,93 +1,212 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>配達登録フォーム</title>
+<title>配達受付フォーム</title>
+<link rel="stylesheet" href="delivaryform.css">
 
 <script>
-function updateFurniture() {
-  const count = document.getElementById("furnitureCount").value;
-  const area = document.getElementById("furnitureArea");
-  area.innerHTML = "";
+function updateFurnitureFields() {
+    const count = document.getElementById("furnitureCount").value;
+    const items = document.getElementsByClassName("furn-item");
 
-  <%-- 家具番号の復元 --%>
-  <% 
-     List<String> furnitureCodes =
-         (List<String>) request.getAttribute("furnitureCodes");
-  %>
-
-  const values = [
-    <% if (furnitureCodes != null) {
-         for (int i = 0; i < furnitureCodes.size(); i++) {
-    %>
-      "<%= furnitureCodes.get(i) %>"<%= (i < furnitureCodes.size()-1) ? "," : "" %>
-    <% } } %>
-  ];
-
-  for (let i = 1; i <= count; i++) {
-    const v = values[i-1] ? values[i-1] : "";
-    area.innerHTML +=
-      `家具番号${i}：
-       <input type="text" name="furniture${i}" value="${v}" required><br>`;
-  }
+    for (let i = 0; i < items.length; i++) {
+        if (i < count) {
+            items[i].style.display = "flex";
+            items[i].querySelector("input").required = true;
+        } else {
+            items[i].style.display = "none";
+            items[i].querySelector("input").required = false;
+            items[i].querySelector("input").value = "";
+        }
+    }
 }
 </script>
+<style>
+body {
+  font-family: "Meiryo", sans-serif;
+  background-color: #f5f5f5;
+}
+
+.container {
+  width: 800px;
+  margin: 30px auto;
+  background: #ffffff;
+  padding: 25px 40px;
+  border-radius: 8px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.section h3 {
+  border-left: 5px solid #3a8dde;
+  padding-left: 10px;
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  background-color: #e8f3ff;
+  border: 1px solid #888;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.furniture-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 40px;
+  margin-top: 15px;
+}
+
+.furn-item {
+  display: flex;
+  align-items: center;
+}
+
+.furn-item span {
+  width: 20px;
+  font-weight: bold;
+}
+
+.buttons {
+  text-align: center;
+  margin-top: 30px;
+}
+
+button {
+  font-size: 16px;
+  padding: 10px 30px;
+  margin: 0 15px;
+  border-radius: 8px;
+  border: 2px solid #333;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+}
+
+.error {
+  background-color: #ffe0e0;
+  color: #c00;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+</style>
 </head>
+<body onload="updateFurnitureFields()">
 
-<body onload="updateFurniture()">
+<div class="container">
 
-<h2>配達登録フォーム</h2>
+<h2>配達受付フォーム</h2>
 
-<%-- エラーメッセージ表示 --%>
+<%-- エラーメッセージ --%>
 <%
 String errorMessage = (String) request.getAttribute("errorMessage");
 if (errorMessage != null) {
 %>
-<p style="color:red;"><%= errorMessage %></p>
+<div class="error"><%= errorMessage %></div>
 <%
 }
 %>
 
 <form action="delivaryform" method="post">
 
-  郵便番号：
+<!-- =========================
+     お客様情報
+========================= -->
+<div class="section">
+  <h3>お客様情報</h3>
+
+  <label>郵便番号（半角7桁）</label>
   <input type="text" name="zipcode"
          value="<%= request.getAttribute("zipcode") != null ? request.getAttribute("zipcode") : "" %>"
-         required><br>
+         placeholder="例：9830013" required>
 
-  住所：
+  <label>住所（全角）</label>
   <input type="text" name="address"
          value="<%= request.getAttribute("address") != null ? request.getAttribute("address") : "" %>"
-         required><br>
+         placeholder="例：宮城県仙台市青葉区花京院1丁目3番1号AIマンション302"
+         required>
 
-  氏名：
+  <label>氏名（漢字・スペースなし）</label>
   <input type="text" name="name"
          value="<%= request.getAttribute("name") != null ? request.getAttribute("name") : "" %>"
-         required><br>
+         placeholder="例：東北太郎" required>
 
-  電話番号：
+  <label>電話番号（半角数字・ハイフンなし）</label>
   <input type="text" name="tel"
          value="<%= request.getAttribute("tel") != null ? request.getAttribute("tel") : "" %>"
-         required><br>
+         placeholder="例：09012345678" required>
+</div>
 
-  家具数：
-  <input type="number"
-         id="furnitureCount"
-         name="furnitureCount"
+<!-- =========================
+     家具情報
+========================= -->
+<div class="section">
+  <h3>家具情報</h3>
+
+  <label>家具数</label>
+  <input type="number" id="furnitureCount" name="furnitureCount"
          min="1" max="10"
          value="<%= request.getAttribute("furnitureCount") != null ? request.getAttribute("furnitureCount") : 1 %>"
-         onchange="updateFurniture()"><br>
+         onchange="updateFurnitureFields()" required>
 
-  <div id="furnitureArea"></div>
+  <div class="furniture-grid">
+  <%
+    List<String> furnitureCodes =
+        (List<String>) request.getAttribute("furnitureCodes");
 
-  <br>
-  <button type="button" onclick="location.href='index1.html'">戻る</button>
+    for (int i = 1; i <= 10; i++) {
+        String val = "";
+        if (furnitureCodes != null && furnitureCodes.size() >= i) {
+            val = furnitureCodes.get(i-1);
+        }
+  %>
+    <div class="furn-item">
+      <span><%= i %></span>
+      <input type="text" name="furniture<%= i %>"
+             value="<%= val %>"
+             placeholder="例：F00001">
+    </div>
+  <%
+    }
+  %>
+  </div>
+</div>
+
+<!-- =========================
+     ボタン
+========================= -->
+<div class="buttons">
+  <button type="button" onclick="history.back()">戻る</button>
   <button type="submit">確認</button>
+</div>
 
 </form>
+</div>
 
 </body>
 </html>
