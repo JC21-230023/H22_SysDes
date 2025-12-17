@@ -26,11 +26,12 @@ public interface ConnectSQL {
 			return st;
 			/*st.setString(1,○○name);
 			 * st.setInt(2,○○Id);
+			 * 
+			 * 
 			 * st.executeUpdate();
 			 * 
 			 * */
 	}
-	
 	//*******************************************
 	
 	public static ResultSet connectDB(String sql) 
