@@ -164,10 +164,13 @@ public class DelivaryServlet extends HttpServlet {
         List<String> availableDateList = new ArrayList<>();
 
         String sqlDate =
-            "SELECT DISTINCT TO_CHAR(AVAIL_DEL_DATETIME,'YYYY-MM-DD') AS AVAIL_DATE " +
-            "FROM DATE_CONTRA " +
-            "WHERE CONTRA_CODE = ? AND MAX_DELIVERY_COUNT >= ? " +
-            "ORDER BY AVAIL_DATE";
+        	    "SELECT DISTINCT TO_CHAR(AVAIL_DEL_DATETIME,'YYYY-MM-DD') AS AVAIL_DATE " +
+        	    "FROM DATE_CONTRA " +
+        	    "WHERE CONTRA_CODE = ? " +
+        	    "  AND MAX_DELIVERY_COUNT >= ? " +
+        	    "  AND AVAIL_DEL_DATETIME >= TRUNC(SYSDATE) + 2 " +
+        	    "ORDER BY AVAIL_DATE";
+
 
         try {
             PreparedStatement ps = ConnectSQL.getSt(sqlDate);

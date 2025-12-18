@@ -257,11 +257,17 @@ if (availableDateList != null) {
 %>
 ];
 
-const calendar = document.getElementById("calendar");
-const hopeDate = document.getElementById("hopeDate");
+const calendar   = document.getElementById("calendar");
+const hopeDate   = document.getElementById("hopeDate");
 const monthLabel = document.getElementById("monthLabel");
 
+/* 表示中の月 */
 let current = new Date();
+
+/* ===== 選択可能な最小日：今日 + 2日（翌々日） ===== */
+const minDate = new Date();
+minDate.setHours(0,0,0,0);
+minDate.setDate(minDate.getDate() + 2);
 
 /* ===== 月切替 ===== */
 function changeMonth(diff){
@@ -273,44 +279,59 @@ function changeMonth(diff){
 function renderCalendar(){
   calendar.innerHTML = "";
 
-  const year = current.getFullYear();
+  const year  = current.getFullYear();
   const month = current.getMonth();
-  monthLabel.textContent = year + "年 " + (month+1) + "月";
+  monthLabel.textContent = year + "年 " + (month + 1) + "月";
 
-  ["日","月","火","水","木","金","土"].forEach(d=>{
+  /* 曜日ヘッダ */
+  ["日","月","火","水","木","金","土"].forEach(d => {
     const h = document.createElement("div");
     h.textContent = d;
     h.className = "cal-head";
     calendar.appendChild(h);
   });
 
+  /* 月初の空白 */
   const first = new Date(year, month, 1);
-  for(let i=0;i<first.getDay();i++){
+  for(let i = 0; i < first.getDay(); i++){
     calendar.appendChild(document.createElement("div"));
   }
 
-  const last = new Date(year, month+1, 0);
-  for(let d=1; d<=last.getDate(); d++){
-    const cell = document.createElement("div");
-    const mm = ("0"+(month+1)).slice(-2);
-    const dd = ("0"+d).slice(-2);
-    const ymd = year + "-" + mm + "-" + dd;
+  /* 日付セル */
+  const last = new Date(year, month + 1, 0);
+  for(let d = 1; d <= last.getDate(); d++){
 
+    const cell = document.createElement("div");
     cell.textContent = d;
     cell.className = "day";
 
-    if(availableDates.includes(ymd)){
+    const mm  = ("0" + (month + 1)).slice(-2);
+    const dd  = ("0" + d).slice(-2);
+    const ymd = year + "-" + mm + "-" + dd;
+
+    const cellDate = new Date(year, month, d);
+    cellDate.setHours(0,0,0,0);
+
+    /* ===== 判定 ===== */
+    if (
+      availableDates.includes(ymd) &&
+      cellDate >= minDate
+    ) {
+      // 明後日以降 & 配達可能
       cell.classList.add("available");
-      cell.onclick = ()=>{
+      cell.onclick = () => {
         document.querySelectorAll(".day.selected")
-          .forEach(el=>el.classList.remove("selected"));
+          .forEach(el => el.classList.remove("selected"));
+
         cell.classList.add("selected");
         hopeDate.value = ymd;
-        document.getElementById("dateError").style.display="none";
+        document.getElementById("dateError").style.display = "none";
       };
-    }else{
+    } else {
+      // 今日・明日・過去日・業者不可日
       cell.classList.add("disabled");
     }
+
     calendar.appendChild(cell);
   }
 }
@@ -320,12 +341,12 @@ document.querySelector("form").addEventListener("submit", function(e){
   let ok = true;
 
   if(!hopeDate.value){
-    document.getElementById("dateError").style.display="block";
+    document.getElementById("dateError").style.display = "block";
     ok = false;
   }
 
   if(!document.getElementById("hopeTime").value){
-    document.getElementById("timeError").style.display="block";
+    document.getElementById("timeError").style.display = "block";
     ok = false;
   }
 
@@ -335,6 +356,7 @@ document.querySelector("form").addEventListener("submit", function(e){
 /* 初期表示 */
 renderCalendar();
 </script>
+
 
 
 </body>
