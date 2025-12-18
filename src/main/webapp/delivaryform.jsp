@@ -8,6 +8,48 @@
 <link rel="stylesheet" href="delivaryform.css">
 
 <script>
+/* ============================
+ * 郵便番号 → 住所検索（ボタン）
+ * ============================ */
+async function searchAddress() {
+    const zipInput = document.getElementsByName("zipcode")[0];
+    const addressInput = document.getElementsByName("address")[0];
+
+    const zip = zipInput.value.replace(/[^0-9]/g, "");
+
+    if (zip.length !== 7) {
+        alert("郵便番号は7桁で入力してください");
+        return;
+    }
+
+    try {
+        const res = await fetch(
+            "https://postcode.teraren.com/postcodes/" + zip + ".json"
+        );
+
+        if (!res.ok) {
+            alert("住所が見つかりませんでした");
+            return;
+        }
+
+        const data = await res.json();
+
+        const addr =
+            (data.prefecture || "") +
+            (data.city || "") +
+            (data.suburb || "");
+
+        if (addr !== "") {
+            addressInput.value = addr;
+        } else {
+            alert("住所が見つかりませんでした");
+        }
+    } catch (e) {
+        alert("住所検索に失敗しました");
+        console.error(e);
+    }
+}
+
 function updateFurnitureFields() {
     const count = document.getElementById("furnitureCount").value;
     const items = document.getElementsByClassName("furn-item");
@@ -140,10 +182,21 @@ if (errorMessage != null) {
 <div class="section">
   <h3>お客様情報</h3>
 
-  <label>郵便番号（半角7桁）</label>
-  <input type="text" name="zipcode"
-         value="<%= request.getAttribute("zipcode") != null ? request.getAttribute("zipcode") : "" %>"
-         placeholder="例：9830013" required>
+  <label>郵便番号（半角7桁・ハイフンなし）</label>
+  <div style="display:flex; gap:10px; align-items:center;">
+     <input type="text" name="zipcode"
+     value="<%= request.getAttribute("zipcode") != null ? request.getAttribute("zipcode") : "" %>"
+     placeholder="例：9830013"
+     style="flex:1;"
+     required>
+
+     <button type="button" onclick="searchAddress()"
+          style="padding:6px 14px; font-size:14px;">
+    検索
+     </button>
+   </div>
+
+
 
   <label>住所（全角）</label>
   <input type="text" name="address"
@@ -201,7 +254,7 @@ if (errorMessage != null) {
      ボタン
 ========================= -->
 <div class="buttons">
-  <button type="button" onclick="history.back()">戻る</button>
+  <button type="button" onclick="location.href='index1.html'">戻る</button>
   <button type="submit">確認</button>
 </div>
 
