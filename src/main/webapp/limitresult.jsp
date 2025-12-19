@@ -93,8 +93,11 @@ button:hover {
     </div>
 
     <div class="button-area">
+        <button onclick="location.href='index2.jsp'">
+            TOPに戻る
+        </button>
         <button onclick="location.href='limitform.jsp'">
-            戻る
+            続けて登録する
         </button>
     </div>
 
