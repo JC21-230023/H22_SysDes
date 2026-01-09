@@ -50,9 +50,7 @@ public class DelivaryServlet extends HttpServlet {
         // 入力数チェック（未入力対策）
         // =============================
         if (furnitureCodes.size() != furnitureCount) {
-
             request.setAttribute("errorMessage", "家具番号が未入力の項目があります。");
-
             request.setAttribute("zipcode", postCode);
             request.setAttribute("address", address);
             request.setAttribute("name", name);
@@ -74,9 +72,7 @@ public class DelivaryServlet extends HttpServlet {
         try {
             for (String code : furnitureCodes) {
                 PreparedStatement ps =
-                    ConnectSQL.getSt(
-                        "SELECT FURN_NAME FROM FURN WHERE FURN_CODE = ?"
-                    );
+                    ConnectSQL.getSt("SELECT FURN_NAME FROM FURN WHERE FURN_CODE = ?");
                 ps.setString(1, code);
                 ResultSet rs = ps.executeQuery();
 
@@ -94,12 +90,8 @@ public class DelivaryServlet extends HttpServlet {
         }
 
         if (!errorFurniture.isEmpty()) {
-
-            request.setAttribute(
-                "errorMessage",
-                "存在しない家具番号があります： " + String.join(", ", errorFurniture)
-            );
-
+            request.setAttribute("errorMessage",
+                "存在しない家具番号があります： " + String.join(", ", errorFurniture));
             request.setAttribute("zipcode", postCode);
             request.setAttribute("address", address);
             request.setAttribute("name", name);
@@ -113,16 +105,19 @@ public class DelivaryServlet extends HttpServlet {
         }
 
         // =============================
-        // ③ 郵便番号 → 配達業者検索
+        // ③ 郵便番号 → 配達業者検索（DATE_CONTRA件数最大）
         // =============================
         String contraCode = null;
         String contraName = null;
 
         String sqlContra =
-            "SELECT C.CONTRA_CODE, C.CONTRA_NAME " +
+            "SELECT C.CONTRA_CODE, C.CONTRA_NAME, COUNT(D.AVAIL_DEL_DATETIME) AS DATE_COUNT " +
             "FROM POSTCODE P " +
             "JOIN CONTRA C ON P.DELAREA_CODE = C.DELAREA_CODE " +
-            "WHERE P.POST_CODE LIKE ?";
+            "LEFT JOIN DATE_CONTRA D ON C.CONTRA_CODE = D.CONTRA_CODE " +
+            "WHERE P.POST_CODE LIKE ? " +
+            "GROUP BY C.CONTRA_CODE, C.CONTRA_NAME " +
+            "ORDER BY DATE_COUNT DESC";
 
         try {
             PreparedStatement ps = ConnectSQL.getSt(sqlContra);
@@ -137,21 +132,14 @@ public class DelivaryServlet extends HttpServlet {
         }
 
         if (contraCode == null) {
-
-            request.setAttribute(
-                "errorMessage",
-                "この郵便番号では配達可能な業者が見つかりません。"
-            );
-
+            request.setAttribute("errorMessage", "この郵便番号では配達可能な業者が見つかりません。");
             request.setAttribute("zipcode", postCode);
             request.setAttribute("address", address);
             request.setAttribute("name", name);
             request.setAttribute("tel", tel);
             request.setAttribute("furnitureCount", furnitureCount);
             request.setAttribute("furnitureCodes", furnitureCodes);
-            // request にセットされている前提
             request.setAttribute("furnitureList", furnitureList);
-
 
             request.getRequestDispatcher("/delivaryform.jsp")
                    .forward(request, response);
@@ -159,10 +147,9 @@ public class DelivaryServlet extends HttpServlet {
         }
 
         // =============================
-        // ④ 配達可能日取得
+        // ④ 配達可能日取得（選択された業者）
         // =============================
         List<String> availableDateList = new ArrayList<>();
-
         String sqlDate =
         	    "SELECT DISTINCT TO_CHAR(AVAIL_DEL_DATETIME,'YYYY-MM-DD') AS AVAIL_DATE " +
         	    "FROM DATE_CONTRA " +
@@ -170,7 +157,6 @@ public class DelivaryServlet extends HttpServlet {
         	    "  AND MAX_DELIVERY_COUNT >= ? " +
         	    "  AND AVAIL_DEL_DATETIME >= TRUNC(SYSDATE) + 2 " +
         	    "ORDER BY AVAIL_DATE";
-
 
         try {
             PreparedStatement ps = ConnectSQL.getSt(sqlDate);
