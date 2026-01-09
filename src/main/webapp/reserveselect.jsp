@@ -4,7 +4,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>予約内容確認（キャンセル）</title>
+<title>予約内容確認</title>
 
 <style>
 body {
@@ -43,17 +43,43 @@ th {
 }
 .button-area {
     text-align: center;
+    margin-top: 30px;
 }
 button {
     padding: 12px 40px;
     font-size: 18px;
     border-radius: 10px;
-    border: 2px solid #c0392b;
-    background: #fff;
     cursor: pointer;
+    margin: 0 10px;
 }
-button:hover {
+
+/* 更新 */
+.update-btn {
+    border: 2px solid #2980b9;
+    background: #ffffff;
+    color: #2980b9;
+}
+.update-btn:hover {
+    background: #e8f2fb;
+}
+
+/* キャンセル */
+.cancel-btn {
+    border: 2px solid #c0392b;
+    background: #ffffff;
+    color: #c0392b;
+}
+.cancel-btn:hover {
     background: #fdecea;
+}
+
+/* 戻る */
+.back-btn {
+    border: 2px solid #999;
+    background: #ffffff;
+}
+.back-btn:hover {
+    background: #f0f0f0;
 }
 </style>
 </head>
@@ -61,7 +87,7 @@ button:hover {
 <body>
 <div class="container">
 
-<h2>予約内容確認（キャンセル）</h2>
+<h2>予約内容確認</h2>
 
 <div class="section">
     <div class="row">予約番号：<strong><%= request.getAttribute("reservCode") %></strong></div>
@@ -72,9 +98,11 @@ button:hover {
     <div class="row">配達業者：<%= request.getAttribute("contraName") %></div>
     <div class="row">配達希望日：
         <%
-            LocalDateTime deliveryDatetime = (LocalDateTime) request.getAttribute("deliveryDatetime");
+            LocalDateTime deliveryDatetime =
+                (LocalDateTime) request.getAttribute("deliveryDatetime");
             if (deliveryDatetime != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm");
+                DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm");
                 out.print(deliveryDatetime.format(formatter));
             } else {
                 out.print("未設定");
@@ -114,19 +142,34 @@ if (furnList != null && !furnList.isEmpty()) {
 <%
 }
 %>
-
 </table>
 </div>
 
-<form action="cancelresult" method="post">
-    <input type="hidden" name="reservationCode"
-           value="<%= request.getAttribute("reservCode") %>">
+<!-- ボタンエリア -->
+<div class="button-area">
 
-    <div class="button-area">
-        <button type="button" onclick="location.href='selectform.jsp'">戻る</button>
-        <button type="submit">キャンセルする</button>
-    </div>
-</form>
+    <!-- 戻る -->
+    <button type="button"
+            class="back-btn"
+            onclick="location.href='reservesearch.jsp'">
+        戻る
+    </button>
+    
+    <!-- 更新 -->
+    <form action="update" method="post" style="display:inline;">
+        <input type="hidden" name="reservationCode"
+               value="<%= request.getAttribute("reservCode") %>">
+        <button type="submit" class="update-btn">更新する</button>
+    </form>
+
+    <!-- キャンセル -->
+    <form action="cancelresult" method="post" style="display:inline;">
+        <input type="hidden" name="reservationCode"
+               value="<%= request.getAttribute("reservCode") %>">
+        <button type="submit" class="cancel-btn">キャンセルする</button>
+    </form>
+
+</div>
 
 </div>
 </body>
