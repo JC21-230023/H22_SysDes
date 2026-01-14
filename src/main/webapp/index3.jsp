@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -25,9 +26,9 @@ h1 {
 
 /* メニューボタン */
 .menu-button {
-    display: block;                 /* ★ 縦並び */
+    display: block;                 /* 縦並び */
     width: 800px;
-    margin: 25px auto;              /* ★ ボタン間の余白 */
+    margin: 25px auto;              /* ボタン間余白 */
     padding: 40px 0;
     font-size: 28px;
     text-decoration: none;
@@ -42,11 +43,22 @@ h1 {
     background-color: #eef6f7;
 }
 
-/* 補足テキスト */
-.note {
-    margin-top: 40px;
-    color: #666;
-    font-size: 16px;
+/* ログアウトボタン */
+.logout-button {
+    display: block;
+    width: 300px;
+    margin: 60px auto 0;
+    padding: 20px 0;
+    font-size: 18px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #999;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #777;
 }
 </style>
 </head>
@@ -69,6 +81,11 @@ h1 {
 
     <a href="" class="menu-button">
         配達完了登録
+    </a>
+
+    <!-- ログアウト -->
+    <a href="" class="logout-button"> 
+        ログアウト
     </a>
 </div>
 </body>
