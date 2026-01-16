@@ -41,7 +41,7 @@ public class CancelResultServlet extends HttpServlet {
                     "errorMessage",
                     "入力された予約番号は存在しません。"
                 );
-                request.getRequestDispatcher("selectform.jsp")
+                request.getRequestDispatcher("reserveselect.jsp")
                        .forward(request, response);
                 return;
             }
