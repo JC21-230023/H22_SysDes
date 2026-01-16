@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>キャンセル完了</title>
+<title>更新完了</title>
 
 <style>
 body {
@@ -36,6 +36,7 @@ h2 {
     padding: 25px;
     margin-bottom: 40px;
     font-size: 18px;
+    line-height: 1.8;
 }
 
 .button-area {
@@ -61,14 +62,30 @@ button:hover {
 
 <div class="container">
 
-    <h2>キャンセル完了</h2>
+    <h2>更新完了</h2>
 
     <div class="message">
-        配達予約のキャンセルが完了しました
+        配達予約の更新が完了しました。
     </div>
 
     <div class="box">
-        予約番号：<strong>${reservCode}</strong>
+        予約番号：<strong>${reservCode}</strong><br>
+        配達日：<strong>${hopeDate}</strong><br>
+        希望時間帯：
+        <strong>
+        <%
+            String hopeTime = (String) request.getAttribute("hopeTime");
+            if ("AM".equals(hopeTime)) {
+        %>
+            午前（9:00～12:00）
+        <%
+            } else if ("PM".equals(hopeTime)) {
+        %>
+            午後（13:00～17:00）
+        <%
+            }
+        %>
+        </strong>
     </div>
 
     <div class="button-area">

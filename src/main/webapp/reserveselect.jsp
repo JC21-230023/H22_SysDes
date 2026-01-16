@@ -81,6 +81,23 @@ button {
 .back-btn:hover {
     background: #f0f0f0;
 }
+
+/* 共通ボタンサイズ */
+.btn {
+    width: 220px;
+    height: 50px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 5px 10px;
+}
+.button-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+
 </style>
 </head>
 
@@ -148,28 +165,42 @@ if (furnList != null && !furnList.isEmpty()) {
 <!-- ボタンエリア -->
 <div class="button-area">
 
-    <!-- 戻る -->
-    <button type="button"
-            class="back-btn"
+    <!-- 上段 -->
+    <div class="button-row">
+        <button type="button"
+            class="btn back-btn"
             onclick="location.href='reservesearch.jsp'">
-        戻る
-    </button>
-    
-    <!-- 更新 -->
-    <form action="update" method="post" style="display:inline;">
-        <input type="hidden" name="reservationCode"
-               value="<%= request.getAttribute("reservCode") %>">
-        <button type="submit" class="update-btn">更新する</button>
-    </form>
+            戻る
+        </button>
 
-    <!-- キャンセル -->
-    <form action="cancelresult" method="post" style="display:inline;">
-        <input type="hidden" name="reservationCode"
-               value="<%= request.getAttribute("reservCode") %>">
-        <button type="submit" class="cancel-btn">キャンセルする</button>
-    </form>
+        <button type="button"
+            class="btn back-btn"
+            onclick="location.href='index2.html'">
+            終了
+        </button>
+    </div>
+
+    <!-- 下段 -->
+    <div class="button-row">
+        <form action="update" method="post">
+            <input type="hidden" name="reservationCode"
+                   value="<%= request.getAttribute("reservCode") %>">
+            <button type="submit" class="btn update-btn">
+                配達希望日の変更
+            </button>
+        </form>
+
+        <form action="cancelresult" method="post">
+            <input type="hidden" name="reservationCode"
+                   value="<%= request.getAttribute("reservCode") %>">
+            <button type="submit" class="btn cancel-btn">
+                キャンセル
+            </button>
+        </form>
+    </div>
 
 </div>
+
 
 </div>
 </body>
