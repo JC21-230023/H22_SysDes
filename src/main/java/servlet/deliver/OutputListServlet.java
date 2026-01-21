@@ -1,6 +1,9 @@
 package servlet.deliver;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,15 +30,26 @@ public class OutputListServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/Outputlist.jsp");
+		final String ALLdelivers=
+			"SELECT CONTRA_CODE, CONTRA_NAME FROM CONTRA";
 		
 		try {
-			
-			ConnectSQL.getSt("");
+			ResultSet rs=ConnectSQL.connectDB(ALLdelivers);
+			List<String[]> deliverList = new ArrayList<>();
+			while(rs.next() != false) {
+				String[] ss = new String[2];
+				ss[0] = rs.getString("CONTRA_CODE");
+				ss[1] = rs.getString("CONTRA_NAME");
+				deliverList.add(ss);
+			}
+			request.setAttribute("CONTRA",deliverList);
 		}catch(Exception e) {
-			
-			
+			e.printStackTrace();
 		}
+		System.out.println("deliver/outputListへ");
+		
+		request.getRequestDispatcher("deliver/Outputlist.jsp")
+			.forward(request, response);
 	}
 
 	/**
