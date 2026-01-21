@@ -75,11 +75,11 @@ h1 {
         業者情報確認・編集
     </a>
 
-    <a href="" class="menu-button">
-        翌日の配達依頼リスト表示
+    <a href="./delivers" class="menu-button">
+        翌日の配達依頼リスト表示△
     </a>
 
-    <a href="" class="menu-button">
+    <a href="deliverystatusinput.jsp" class="menu-button">
         配達ステータス登録〇
     </a>
     <br><br>
