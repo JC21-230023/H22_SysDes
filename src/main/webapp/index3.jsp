@@ -82,6 +82,8 @@ h1 {
     <a href="" class="menu-button">
         配達ステータス登録〇
     </a>
+    <br><br>
+	<a href="kadai.html">他機能確認</a>
 
     <!-- ログアウト -->
     <a href="" class="logout-button"> 
