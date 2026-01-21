@@ -65,7 +65,7 @@ h1 {
 
 <body>
 <div class="container">
-    <h1>配達サービス管理システム</h1>
+    <h1>配達サービス管理システム(業者)</h1>
 
     <a href="limitform.jsp" class="menu-button">
         配達上限登録〇
@@ -80,8 +80,10 @@ h1 {
     </a>
 
     <a href="" class="menu-button">
-        配達完了登録
+        配達ステータス登録〇
     </a>
+    <br><br>
+	<a href="kadai.html">他機能確認</a>
 
     <!-- ログアウト -->
     <a href="" class="logout-button"> 
