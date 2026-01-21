@@ -45,12 +45,13 @@ th {
     text-align: center;
     margin-top: 30px;
 }
-button {
-    padding: 12px 40px;
-    font-size: 18px;
+.btn {
+    width: 220px;
+    height: 50px;
+    font-size: 16px;
     border-radius: 10px;
     cursor: pointer;
-    margin: 0 10px;
+    margin: 5px 10px;
 }
 
 /* 更新 */
@@ -82,23 +83,20 @@ button {
     background: #f0f0f0;
 }
 
-/* 共通ボタンサイズ */
-.btn {
-    width: 220px;
-    height: 50px;
-    font-size: 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    margin: 5px 10px;
-}
 .button-row {
     display: flex;
     justify-content: center;
     margin-bottom: 15px;
 }
-
-
 </style>
+
+<script>
+/* キャンセル確認 */
+function confirmCancel() {
+    return confirm("予約をキャンセルします。\nよろしいですか？");
+}
+</script>
+
 </head>
 
 <body>
@@ -190,7 +188,8 @@ if (furnList != null && !furnList.isEmpty()) {
             </button>
         </form>
 
-        <form action="cancelresult" method="post">
+        <!-- ★ 確認ダイアログ付きキャンセル -->
+        <form action="cancelresult" method="post" onsubmit="return confirmCancel();">
             <input type="hidden" name="reservationCode"
                    value="<%= request.getAttribute("reservCode") %>">
             <button type="submit" class="btn cancel-btn">
@@ -200,7 +199,6 @@ if (furnList != null && !furnList.isEmpty()) {
     </div>
 
 </div>
-
 
 </div>
 </body>

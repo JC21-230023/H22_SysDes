@@ -68,19 +68,19 @@ h1 {
     <h1>配達サービス管理システム(業者)</h1>
 
     <a href="limitform.jsp" class="menu-button">
-        配達上限登録〇
+        配達上限登録
     </a>
 
-    <a href="" class="menu-button">
+    <a href="testform.jsp" class="menu-button">
         業者情報確認・編集
     </a>
 
-    <a href="" class="menu-button">
+    <a href="./delivers" class="menu-button">
         翌日の配達依頼リスト表示
     </a>
 
-    <a href="" class="menu-button">
-        配達ステータス登録〇
+    <a href="deliverystatusinput.jsp" class="menu-button">
+        配達ステータス登録
     </a>
     <br><br>
 	<a href="kadai.html">他機能確認</a>
