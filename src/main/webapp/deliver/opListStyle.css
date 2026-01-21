@@ -1,0 +1,149 @@
+@charset "UTF-8";
+
+/* ====== ベース／用紙設定（印刷想定 A4 縦） ====== */
+@page {
+  size: A4 portrait;
+  margin: 12mm;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN",
+               "Meiryo", "Noto Sans JP", sans-serif;
+  color: #222;
+  line-height: 1.4;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* 全体の外枠（帳票枠） */
+.sheet {
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 10mm 10mm 8mm;
+}
+
+/* ====== ヘッダー部分 ====== */
+header.listSetting {
+  display: grid;
+  grid-template-columns: 1fr 260px; /* 左：タイトル＆企業名／右：日付群 */
+  gap: 8px 12px;
+  align-items: start;
+  border-bottom: 1px dashed #aaa;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+/* タイトル */
+header.listSetting h1 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+/* 企業名行（「企業名： H社」形式） */
+header.listSetting > div:nth-of-type(1) {
+  font-size: 12px;
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+header.listSetting > div:nth-of-type(1) > div {
+  font-weight: 600;
+}
+
+/* 右側の明細（作成日／配達予定日／配達先件数） */
+
+listdetail {
+  justify-self: end;
+  width: 260px;
+  display: flex;
+  flex-direction: column;   /* ← 縦並び */
+  gap: 4px;
+  font-size: 12px;
+}
+
+/* 1行分（作成日など） */
+.listdetail > div {
+  display: flex;             /* ラベル＋値を横並び */
+  justify-content: space-between;
+  white-space: nowrap;
+  
+}
+
+.listdetail > div::first-line {
+  font-weight: 600;
+  /*text-align: center;*/
+}
+
+/* 値側（数字の桁揃え用） */
+.listdetail > div span {
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ====== テーブル（リスト） ====== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* 列幅固定 */
+  font-size: 12px;
+}
+
+/* 列幅（No／配達先情報／予約番号／個数／家具番号） */
+table colgroup col:nth-child(1) { width: 7%;  }
+table colgroup col:nth-child(2) { width: 43%; }
+table colgroup col:nth-child(3) { width: 15%; }
+table colgroup col:nth-child(4) { width: 10%; }
+table colgroup col:nth-child(5) { width: 25%; }
+
+/* ヘッダー行 */
+table thead th,
+.back1, .back2, .back3, .back4, .back5 {
+  background: #eee;
+  border: 1px solid #999;
+  padding: 6px 8px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* データ行 */
+table td {
+  border: 1px solid #bbb;
+  padding: 6px 8px;
+  vertical-align: top; /* 家具番号など複数行でも上詰め */
+  word-break: break-word;
+}
+
+/* No列は中央寄せ、個数・予約番号も中央寄せ気味 */
+td.back1 { text-align: center; width: 7%; }
+td.back3, td.back4 { text-align: center; }
+
+/* 配達先情報（住所・氏名）の内側行間を狭める */
+td.back2 > div { margin: 0 0 2px; }
+td.back5 > div { margin: 0 0 2px; }
+
+/* 罫線のトーンを少し弱める＆行区切りを視認しやすく */
+tbody tr + tr td { border-top: 1px dashed #aaa; }
+
+/* 印刷最適化（表の途中改ページを回避） */
+table, tr, td, th { page-break-inside: avoid; }
+
+/* 画面向けの余白微調整（任意） */
+@media screen {
+  body { background: #f5f5f5; }
+  .sheet { background: #fff; margin: 16px auto; max-width: 190mm; }
+}
+
+/* 小さめデバイス（プレビュー用） */
+@media screen and (max-width: 768px) {
+  header.listSetting {
+    grid-template-columns: 1fr; /* 縦積み */
+  }
+  .listdetail {
+    justify-self: stretch;
+    width: 100%;
+  }
+}

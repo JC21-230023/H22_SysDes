@@ -8,6 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+ <link rel="stylesheet" href="./deliver/opListStyle.css">
 </head>
 <%
 Object obj = request.getAttribute("RSV_LIST");
@@ -25,12 +26,12 @@ String today =
 <body>
 <!-- 区切り -->
 
-<header>
-	<div>依頼リスト</div>
-	<div>企業名：
+<header class=listSetting>
+	<h1>依頼リスト</h1>
+	<div class=>企業名：
 		<div><%=contra %></div>
 	</div>
-	<div>
+	<div class="listdetail">
 		<div>作成日
 			<%= today%>
 		</div>
