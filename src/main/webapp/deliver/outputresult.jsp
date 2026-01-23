@@ -83,5 +83,6 @@ for (Reserv ss : rsv_List) {
 <%
 }%>
 </table>
+
 </body>
 </html>
