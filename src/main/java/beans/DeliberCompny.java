@@ -1,5 +1,5 @@
-package beans;
+/*package beans;
 
 public class DeliberCompny {
 
-}
+}*/

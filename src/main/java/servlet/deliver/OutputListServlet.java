@@ -46,7 +46,7 @@ public class OutputListServlet extends HttpServlet {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("deliver/outputListへ");
+		//System.out.println("deliver/outputListへ");
 		
 		request.getRequestDispatcher("deliver/Outputlist.jsp")
 			.forward(request, response);
