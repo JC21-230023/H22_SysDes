@@ -33,7 +33,7 @@ String password = (String)request.getAttribute("password");
 </div>
 
 <div class="center">
-    <form action="top.jsp" method="get">
+    <form action="index2.html" method="get">
         <input type="submit" value="TOPに戻る">
     </form>
 </div>

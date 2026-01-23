@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -25,9 +26,9 @@ h1 {
 
 /* メニューボタン */
 .menu-button {
-    display: block;                 /* ★ 縦並び */
+    display: block;                 /* 縦並び */
     width: 800px;
-    margin: 25px auto;              /* ★ ボタン間の余白 */
+    margin: 25px auto;              /* ボタン間余白 */
     padding: 40px 0;
     font-size: 28px;
     text-decoration: none;
@@ -42,33 +43,51 @@ h1 {
     background-color: #eef6f7;
 }
 
-/* 補足テキスト */
-.note {
-    margin-top: 40px;
-    color: #666;
-    font-size: 16px;
+/* ログアウトボタン */
+.logout-button {
+    display: block;
+    width: 300px;
+    margin: 60px auto 0;
+    padding: 20px 0;
+    font-size: 18px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #999;
+    border-radius: 20px;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #777;
 }
 </style>
 </head>
 
 <body>
 <div class="container">
-    <h1>配達サービス管理システム</h1>
+    <h1>配達サービス管理システム(業者)</h1>
 
     <a href="limitform.jsp" class="menu-button">
-        配達上限登録〇
+        配達上限登録
     </a>
 
-    <a href="" class="menu-button">
+    <a href="testform.jsp" class="menu-button">
         業者情報確認・編集
     </a>
 
-    <a href="" class="menu-button">
+    <a href="./delivers" class="menu-button">
         翌日の配達依頼リスト表示
     </a>
 
-    <a href="" class="menu-button">
-        配達完了登録
+    <a href="deliverystatusinput.jsp" class="menu-button">
+        配達ステータス登録
+    </a>
+    <br><br>
+	<a href="kadai.html">他機能確認</a>
+
+    <!-- ログアウト -->
+    <a href="" class="logout-button"> 
+        ログアウト
     </a>
 </div>
 </body>
