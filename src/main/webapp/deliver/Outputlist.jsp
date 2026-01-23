@@ -21,9 +21,9 @@
 
 <form action="mklist",method="get">
 	<div >
-		<select name="deliverID">
+		<select name="deliverID_name">
 			<%for(String[] contra:list){%>
-			<option value=<%=contra[0]%>>
+			<option value=<%=contra[0]+"_"+contra[1]%>>
 				<%=contra[1]%>
 			</option>
 			<%}%>
