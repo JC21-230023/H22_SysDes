@@ -32,6 +32,10 @@
 	<div><!--  配達日付-->
 		<input type="date" name="date">
 	</div>
+	<div><!-- 印刷フラグ(未完) -->
+		<input type="checkbox" name="printFlg">
+		<label for="prontFlg">印刷番号</label>
+	</div>
 	<button type="submit">一覧表示</button>
 </form>
 
