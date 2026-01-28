@@ -32,12 +32,14 @@ public class OutputResultServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {
-		String contra=request.getParameter("deliverID");
+		
+		String contra=request.getParameter("deliverID_name").split("_")[0];
+		String contraName=request.getParameter("deliverID_name").split("_")[1];
 		String date = request.getParameter("date");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		String toDay = sdf.format(new Date());
-		String contraName="";
+		
 		
 		
 		String sql="SELECT rsv.DELIVERY_DATETIME, rsv.RESERV_CODE,"
@@ -67,31 +69,16 @@ public class OutputResultServlet extends HttpServlet {
             	rsvList.getLast().addFurnList(rs.getString("FURN_CODE"));
             	//家具追加
     		}//配達の情報を取得
-            //
-            
-            
-            
         }catch (Exception e) {
+        	System.out.println("EEERRROORRR");
 			e.printStackTrace();
 		}
-		String getContraSQL=
-				"SELECT CONTRA_NAME FROM CONTRA WHERE CONTRA_CODE=? ";
-		try {
-			PreparedStatement ps =
-                    ConnectSQL.getSt(getContraSQL);
-			ps.setString(1,contra);
-			
-			ResultSet rs = ps.executeQuery();
-            while(rs.next() != false){//rsの中身は1つだけど念のため
-            	contraName=rs.getString("CONTRA_NAME");
-    		}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		
 		request.setAttribute("RSV_LIST", rsvList);
 		request.setAttribute("DATE",date);
 		request.setAttribute("TODAY",toDay);
 		request.setAttribute("CONTRA",contraName);
+		
 		request.getRequestDispatcher("deliver/outputresult.jsp")
 		.forward(request, response);
 	}
