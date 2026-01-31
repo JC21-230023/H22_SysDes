@@ -95,7 +95,7 @@ contraCodeで業者コードを送信
 	<a href="../kadai.html">他機能確認</a>
 
     <!-- ログアウト -->
-    <a href="" class="logout-button"> 
+    <a href="./login.jsp" class="logout-button"> 
         ログアウト
     </a>
 </div>
