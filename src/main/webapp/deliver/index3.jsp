@@ -80,9 +80,10 @@ contraCodeで業者コードを送信
         配達上限登録
     </a>
 
-    <a href="../testform.jsp" class="menu-button">
-        業者情報確認・編集
-    </a>
+    <a href="../EditFormServlet" class="menu-button">
+    	業者情報確認・編集
+	</a>
+    
 
     <a href="../delivers" class="menu-button">
         翌日の配達依頼リスト表示

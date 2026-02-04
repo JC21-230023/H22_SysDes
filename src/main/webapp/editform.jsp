@@ -148,7 +148,8 @@ function togglePassword() {
        value="編集確定" disabled>
         
         <input type="button" value="戻る"
-               onclick="location.href='index3.jsp';">
+       	onclick="location.href='${pageContext.request.contextPath}/deliver/index3.jsp';">
+        
     </div>
 
 </form>
