@@ -53,11 +53,11 @@ input[type="button"] {
     </div>
 
     <div class="button-area">
-        <input type="button" value="業者情報再表示"
-               onclick="location.href='testform.jsp';">
-        <input type="button" value="へ戻る"
-               onclick="location.href='index3.jsp';">
-    </div>
+    <input type="button" value="業者情報再表示"
+           onclick="location.href='<%= request.getContextPath() %>/EditFormServlet';">
+    <input type="button" value="TOPへ戻る"
+           onclick="location.href='<%= request.getContextPath() %>/deliver/index3.jsp';">
+	</div>
 
 </div>
 
