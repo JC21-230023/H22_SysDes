@@ -1,4 +1,14 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%
+/* =========================
+   ログインチェック＋業者コード取得
+   ========================= */
+String contraCode = (String)session.getAttribute("contraCode");
+if (contraCode == null) {
+    response.sendRedirect(request.getContextPath() + "/deliver/login.jsp");
+    return;
+}
+%>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -6,18 +16,43 @@
 <title>配達上限登録</title>
 
 <style>
-body{font-family:Meiryo;background:#f6f4ee;padding:20px}
-.container{max-width:900px;margin:auto;background:#fff;padding:20px;border-radius:10px}
-table{border-collapse:collapse;width:100%}
-th,td{border:1px solid #ccc;padding:8px;text-align:center}
-th{background:#eef5f9}
-input[type=number]{width:80px}
-.actions{text-align:center;margin-top:15px}
+body{
+    font-family: Meiryo;
+    background: #f6f4ee;
+    padding: 20px;
+}
+.container{
+    max-width: 900px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td{
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+th{
+    background: #eef5f9;
+}
+input[type=number]{
+    width: 80px;
+}
+.actions{
+    text-align: center;
+    margin-top: 15px;
+}
 
-/* ★ 追加 */
-.sun { background:#ffe4ec; }   /* 日曜：ピンク */
-.sat { background:#e6f3ff; }   /* 土曜：水色 */
+/* 土日色分け */
+.sun { background: #ffe4ec; }   /* 日曜 */
+.sat { background: #e6f3ff; }   /* 土曜 */
 </style>
+
 <script>
 function build(){
   const y = document.getElementById("year").value;
@@ -34,11 +69,11 @@ function build(){
     const iso = y + "-" + String(m).padStart(2,'0') + "-" + String(d).padStart(2,'0');
 
     let cls = "";
-    if(dow === 0) cls = "sun"; // 日曜
-    if(dow === 6) cls = "sat"; // 土曜
+    if(dow === 0) cls = "sun";
+    if(dow === 6) cls = "sat";
 
     const tr = document.createElement("tr");
-    if (cls) tr.className = cls;   // ★ ここが重要
+    if (cls) tr.className = cls;
 
     tr.innerHTML =
       "<td>" + iso + "</td>" +
@@ -51,18 +86,23 @@ function build(){
 }
 </script>
 
-
 </head>
 
 <body onload="build()">
 <div class="container">
+
 <h2>配達上限登録</h2>
 
 <form action="limit" method="post">
 
+<!-- 業者コード（表示のみ） -->
+<p>
 業者コード：
-<input type="text" name="contraCode" required>
+<strong><%= contraCode %></strong>
+</p>
 
+<!-- 年月選択 -->
+<p>
 <select id="year" name="year" onchange="build()">
 <%
 int nowYear = java.time.LocalDate.now().getYear();
@@ -82,7 +122,9 @@ for(int i = 1; i <= 12; i++){
 <% } %>
 </select>
 月
+</p>
 
+<!-- 上限入力テーブル -->
 <table>
 <thead>
 <tr>
@@ -96,7 +138,10 @@ for(int i = 1; i <= 12; i++){
 </table>
 
 <div class="actions">
-<button type="button" onclick="location.href='index2.html'">戻る</button>
+<button type="button"
+ onclick="location.href='${pageContext.request.contextPath}/deliver/index3.jsp'">
+戻る
+</button>
 <button type="submit" name="mode" value="save">登録</button>
 </div>
 
