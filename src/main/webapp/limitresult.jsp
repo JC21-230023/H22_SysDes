@@ -93,13 +93,13 @@ button:hover {
     </div>
 
     <div class="button-area">
-        <button onclick="location.href='index3.jsp'">
-            TOPに戻る
-        </button>
-        <button onclick="location.href='limitform.jsp'">
-            続けて登録する
-        </button>
-    </div>
+    <button onclick="location.href='<%= request.getContextPath() %>/deliver/index3.jsp'">
+        TOPに戻る
+    </button>
+    <button onclick="location.href='<%= request.getContextPath() %>/limitform.jsp'">
+        続けて登録する
+    </button>
+	</div>
 
 </div>
 </body>
